@@ -7,6 +7,7 @@ use App\Models\Article;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 class ArticleController extends Controller
@@ -18,7 +19,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::all();
+        $articles = DB::table("articles") -> orderByDesc("created_at") -> get();
 //        $articles = Article::all();
         return view('articles.index', compact('articles'));
     }
@@ -45,9 +46,6 @@ class ArticleController extends Controller
         $validated = Arr::add($validated, 'created_at', Carbon::now());
         Article::insert($validated);
         return Redirect::route('articles.index');
-
-//        $article = Article::create(Arr::except($validated, 'categories'));
-//        $article->getCategories()->attach($validated['categories']);
     }
 
     /**
